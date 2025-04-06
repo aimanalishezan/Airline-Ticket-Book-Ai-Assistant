@@ -17,3 +17,6 @@ system_message+="Always be accurate . if you don't know the answer , say so ."
 
 #function for the tool
 ticket_price={"dhaka":"10000tK","thakurgaon":"5000tk","sylet":"7000tk","morocco":"40000"}
+def get_ticket_price(destination_city):
+    city=destination_city.lower()
+    return ticket_price.get(city,"Unknown")
