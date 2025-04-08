@@ -41,30 +41,33 @@ price_fun={
 tool=[{"type":"function","function":price_fun}]
 
 #gradio ui 
-def chat(message,history):
-    messages=[{"role":"system","content":system_message}] + history + [{"role":"user","content":message}]
-    response=ollama.chat(model=MODEL,messages=messages,tools=tool)
-    if response.choices[0].finish_reason=="tool_call":
-        message=response.choices[0].message
-        response,city=handle_tool_call(message)
+def chat(message, history):
+    messages = [{"role": "system", "content": system_message}] + history + [{"role": "user", "content": message}]
+    response = ollama.chat(model=MODEL, messages=messages, tools=tool)
+    
+    if "tool_call" in response["message"]:
+        message = response["message"]
+        response_tool, city = handle_tool_call(message)
         messages.append(message)
-        messages.append(response)
-        response=ollama.chat(model=MODEL,messages=messages)
-    return response.choices[0].message.content
+        messages.append(response_tool)
+        response = ollama.chat(model=MODEL, messages=messages)
+    
+    return response["message"]["content"]
 
 #function that handle tools calls
 
 def handle_tool_call(message):
-    tool_call=message.tool_call[0]
-    arguments=json.loads(tool_call.function.arguments)
-    city=arguments.get("destination_city")
-    price=get_ticket_price(city)
-    response={
-        "role":"tool",
-        "content": json.dumps({"destination_city":city,"price":price}),
-        "tool_call_if":tool_call.id
+    tool_call = message["tool_call"][0]
+    arguments = json.loads(tool_call["function"]["arguments"])
+    city = arguments.get("destination_city")
+    price = get_ticket_price(city)
+    response = {
+        "role": "tool",
+        "content": json.dumps({"destination_city": city, "price": price}),
+        "tool_call_id": tool_call["id"]
     }
-    return response,city
+    return response, city
+
 
 #intigrate gradio ui 
 gr.ChatInterface(fn=chat,type="messages").launch(share=True,auth=(id,pas))
