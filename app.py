@@ -27,7 +27,7 @@ price_fun={
     "description":"Get the price of a return ticket to the festination city . call this whenver your need to know the ticket price, for ecample when a customer asks ' how much is a ticket to this city'",
     "parameters":{
         "type":"object",
-        "prorperties":{
+        "properties":{
             "destination_city":{
                 "type":"string",
                 "destination":"the city that the customer wants to travel to ",
