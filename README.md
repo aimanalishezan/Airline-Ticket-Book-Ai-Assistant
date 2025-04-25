@@ -118,4 +118,3 @@ Developed with ❤️ by [Your Name]. Feel free to contribute or raise issues!
 
 ---
 
-Would you like me to generate a `requirements.txt` file and a `.env.example` file too?
